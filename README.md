@@ -43,6 +43,6 @@ Configure your input image  [here](https://github.com/ksasso1028/EasyOCR-cpp/blo
 
 Launch from command-line, or within Visual Studio after building.
 
-**Since its designed to be used in a C++ program, text is not being written to disk at*** An output image will be generated in the main repo dir containing an annotated version of the input image with detection bounding boxes
+**Since its designed to be used in a C++ program, text is not being written to disk at the moment** An output image will be generated in the main repo dir containing an annotated version of the input image with detection bounding boxes
 
 
