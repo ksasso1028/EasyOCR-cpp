@@ -27,7 +27,7 @@ Click to Download libtorch - > [download](https://download.pytorch.org/libtorch/
 
 Use OpenCV Windows installer and unzip (v4.6) - > [OpenCV libs](https://opencv.org/releases/)
 
-Make sure to change the location in the Makefile for OpenCV to point to your OpenCV build dir in the [Makefile](https://github.com/ksasso1028/EasyOCR-cpp/blob/e9311ee3f45b59c2709be3a98a04b48c215a845b/CMakeLists.txt#L7)
+Make sure to change the location in the  [Makefile](https://github.com/ksasso1028/EasyOCR-cpp/blob/e9311ee3f45b59c2709be3a98a04b48c215a845b/CMakeLists.txt#L7) for OpenCV to point to your OpenCV build dir 
 
 Create a build directory within the repo, cd to it and run
 ```
