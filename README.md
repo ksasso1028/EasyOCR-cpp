@@ -10,11 +10,12 @@ Libtorch is being utilized with an in-house class I ussualy use for C++ inferenc
 The TorchModel class can easily adapted to run inference on most Pytorch models converted to [TorchScript](https://pytorch.org/tutorials/beginner/Intro_to_TorchScript_tutorial.html). Provides some handy functions to pre process opencv::Mat and handle device usage (GPU,CPU)
 
 Some features that have yet to be implemented:
--beam search, only implemented greedy decoding
--.txt/.pdf output
--exact bounding box merge alg from EasyOCR, opted for custom one which is less complex
--support for other languages, atm only english is supported.
--not sure how well linux is supported, any feedback is appreciated
+
+- [ ] beam search, only implemented greedy decoding
+- [ ].txt/.pdf output
+- [ ]exact bounding box merge alg from EasyOCR, opted for custom one which is less complex
+- [ ]support for other languages, atm only english is supported.
+- [ ]not sure how well linux is supported, any feedback is appreciated
 
 
 ### If you would like to support feel free to make a PR, or a issue if you are having trouble.
