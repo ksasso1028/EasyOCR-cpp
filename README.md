@@ -12,10 +12,10 @@ The TorchModel class can easily adapted to run inference on most Pytorch models 
 Some features that have yet to be implemented:
 
 - [ ] beam search, only implemented greedy decoding
-- [ ].txt/.pdf output
-- [ ]exact bounding box merge alg from EasyOCR, opted for custom one which is less complex
-- [ ]support for other languages, atm only english is supported.
-- [ ]not sure how well linux is supported, any feedback is appreciated
+- [ ] .txt/.pdf output
+- [ ] exact bounding box merge alg from EasyOCR, opted for custom one which is less complex
+- [ ] support for other languages, atm only english is supported.
+- [ ] not sure how well linux is supported, any feedback is appreciated
 
 
 ### If you would like to support feel free to make a PR, or a issue if you are having trouble.
