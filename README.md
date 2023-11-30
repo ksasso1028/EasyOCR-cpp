@@ -1,4 +1,5 @@
 # EasyOCR-cpp
+![alt text](https://github.com/ksasso1028/EasyOCR-cpp/blob/main/output-heatmap.jpg)
 ### Custom C++ implementation of [EasyOCR](https://github.com/JaidedAI/EasyOCR)
 ### Built and tested on Windows 11, libtorch 1.13+cpu and OpenCV 4.6
 
