@@ -6,8 +6,8 @@
 This C++ project implements the pre/post processing to run a OCR pipeline consisting of a text detector [CRAFT](https://arxiv.org/abs/1904.01941), and a CRNN based text recognizer. Unlike the EasyOCR python which is API based, this repo provides a set of classes to show how you can integrate OCR in any C++ program for maximum flexibility. The torchExample.cpp main program highlights how to utilize all elements of the EasyOCR-cpp pipeline. Because a test program is only provided, make sure to configure your input image within torchExample.cpp if you only plan to utilize the test program
 
 
-Libtorch is being utilized with an in-house class I ussualy use for C++ inference [TorchModel](https://github.com/ksasso1028/EasyOCR-cpp/blob/main/src/TorchModel.cpp), and OpenCV for the pre/post processing steps.
-The TorchModel class can easily adapted to run inference on most Pytorch models converted to [TorchScript](https://pytorch.org/tutorials/beginner/Intro_to_TorchScript_tutorial.html). Provides some handy functions to pre process opencv::Mat and handle device usage (GPU,CPU)
+Libtorch is being utilized with an in-house class I ussually use for C++ inference [TorchModel](https://github.com/ksasso1028/EasyOCR-cpp/blob/main/src/TorchModel.cpp), and OpenCV for the pre/post processing steps.
+The TorchModel class can easily adapted to run inference on most Pytorch models converted to [TorchScript](https://pytorch.org/tutorials/beginner/Intro_to_TorchScript_tutorial.html). Provides some handy functions to pre process opencv::Mat and handle device usage (GPU,CPU). Great starting point for C++ based inference for Pytorch Models.
 
 Some features that have yet to be implemented:
 
