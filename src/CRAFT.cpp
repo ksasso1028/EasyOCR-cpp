@@ -47,7 +47,6 @@ HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 
 
 		cv::Size heatMapSize = cv::Size(int(targetW / 2), int(targetH / 2));
-		HeatMapRatio output;
 		output.ratio = ratio;
 		output.heatMapSize = heatMapSize;
 		output.img = resized;
