@@ -6,6 +6,7 @@ using namespace torch::indexing;
 
 HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 {
+	HeatMapRatio output;
 	try {
 		//cv::resize(rimg, rimg, cv::Size(col, row));
 		cv::Mat processed;
@@ -51,12 +52,13 @@ HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 		output.heatMapSize = heatMapSize;
 		output.img = resized;
 		this->ratio = ratio;
-		return output;
+		
 	}
 	catch (std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 	}
+	return output;
 }
 
 
