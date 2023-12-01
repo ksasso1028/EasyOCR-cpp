@@ -8,10 +8,10 @@ int main()
 {
 	torch::NoGradGuard no_grad_guard;
 	c10::InferenceMode guard;
-	// Both are inherited from TorchModel objects
 	CRNNModel recognition;
 	CraftModel detection;
-	// Can optionally set number of threads, set to mimic 4 threads like Tesseract
+
+	// set to mimi Tesseract
 	cv::setNumThreads(4);
 	torch::set_num_threads(4);
 	
