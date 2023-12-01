@@ -8,7 +8,6 @@ HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 {
 	HeatMapRatio output;
 	try {
-		//cv::resize(rimg, rimg, cv::Size(col, row));
 		cv::Mat processed;
 		int channels = img.channels();
 		float height = img.rows;
@@ -21,7 +20,6 @@ HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 			targetSize = canvasSize;
 		}
 		float ratio = targetSize / std::max(height, width);
-		std::cout << "RATIO " << ratio;
 		targetH = int(height * ratio);
 		targetW = int(width * ratio);
 		cv::resize(img, img, cv::Size(targetW, targetH));
@@ -39,8 +37,6 @@ HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 		}
 
 		cv::Mat resized = cv::Mat::zeros(h32, w32, CV_32FC3);
-		std::cout << resized.type() << std::endl;
-		std::cout << img.type() << std::endl;
 		cv::Range colRange = cv::Range(0, cv::min(resized.cols, img.cols)); //select maximum allowed cols
 		cv::Range rowRange = cv::Range(0, cv::min(resized.rows, img.rows)); //select maximum allowed cols
 		img(rowRange, colRange).clone().copyTo(resized(rowRange, colRange));
@@ -68,7 +64,6 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 	// represents how much we change the top left Y
 	std::sort(dets.begin(), dets.end(), boxSorter());
 	//return dets;
-
 
 	bool merge = NULL;
 	std::vector<BoundingBox> merged;
@@ -219,13 +214,10 @@ std::vector<BoundingBox> CraftModel::getBoundingBoxes(torch::Tensor &input, torc
 	std::vector<int> mapper;
 	int numLabels = cv::connectedComponentsWithStats(outputScore, labels, stats, centroids, 4, CV_32S);
 
-	//std::cout << labels << std::endl;
-	std::cout << "stats.size()=" << stats.size() << std::endl;
-	//std::cout << centroids << std::endl;
+	//std::cout << "stats.size()=" << stats.size() << std::endl;
 	for (int i = 1; i < numLabels; i++)
 	{
 		int area = stats.at<int>(i, cv::CC_STAT_AREA);
-		//std::cout << area << std::endl;
 		if (area < 10)
 			continue;
 	
@@ -253,8 +245,8 @@ std::vector<BoundingBox> CraftModel::getBoundingBoxes(torch::Tensor &input, torc
 		if (ex >= c) ex = c;
 		if (ey >= r) ey = r;
 		cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(1 + niter, 1 + niter));
-	    cv::dilate(segMap(cv::Range(sy, ey), cv::Range(sx, ex)), segMap(cv::Range(sy, ey), cv::Range(sx, ex)), kernel);
-		//std::cout << "SEGMAP SHAPE: " << segMap.size() << std::endl;
+	    	cv::dilate(segMap(cv::Range(sy, ey), cv::Range(sx, ex)), segMap(cv::Range(sy, ey), cv::Range(sx, ex)), kernel);
+		
 
 		// make box
 		cv::Mat nonZeroCoords;
@@ -278,11 +270,9 @@ std::vector<BoundingBox> CraftModel::getBoundingBoxes(torch::Tensor &input, torc
 				colVal = box.at<float>(i, 1);
 			}
 			cv::Point point(rowVal, colVal );
-			//std::cout << "POINT  " << point << std::endl;
 			points.push_back(point);
 		}
 		std::sort(points.begin(), points.end(), pointSorter());
-		//std::cout << "POINTS ORDER " << points << std::endl;
 		detection.topLeft.x = (points[0].x * 2);
 		detection.topLeft.y = (points[0].y * 2);
 		detection.bottomRight.x = (points[3].x * 2);
@@ -312,15 +302,9 @@ std::vector<BoundingBox> CraftModel::getBoundingBoxes(torch::Tensor &input, torc
 		//std::cout << "BOUNDING BOX: " << box << std::endl;
 
 	}
-	//std::cout<< "NUMBER OF COMPONENTs we stored" << mapper.size() << std::endl;
 	// # uncomment to see raw output written to disk
 	//cv::imwrite("output-heatmap.jpg", outputScore);
-
-
 	return detBoxes;
-
-
-
 }
 
 cv::Mat CraftModel::normalize(cv::Mat &img)
@@ -329,8 +313,6 @@ cv::Mat CraftModel::normalize(cv::Mat &img)
 	cv::Mat output;
 	// split img:
 	split(img, channels);
-	//mean = (0.485, 0.456, 0.406)
-	//variance = (0.229, 0.224, 0.225)
 	channels[0] = (channels[0] - (.485 * 255)) / (.229 * 255);
 	channels[1] = (channels[1] - (.456 * 255)) / (.224 * 255);
 	channels[2] = (channels[2] - (.406 * 255)) / (.225 * 255);
@@ -353,21 +335,17 @@ std::vector<BoundingBox> CraftModel::runDetector(torch::Tensor& input, bool merg
 {
 	int height = input.size(2);
 	int width = input.size(3);
-	//std::cout << " HEIGHT IS " << height << std::endl;
-	//std::cout << " WIDTH IS " << width << std::endl;
 	std::vector<torch::Tensor> detInput = { input.clone() };
-	//std::cout << input << std::endl;
 	auto output = this->predict(detInput).squeeze().detach().clone();
-	//std::cout << output << std::endl;
 	auto ss = std::chrono::high_resolution_clock::now();
 	auto detections = this->getBoundingBoxes(input.clone(),output.clone());
 	//custom bounding box merging
 	if (merge)
 		detections = this->mergeBoundingBoxes(detections, .97, height, width);
 
-	auto ee = std::chrono::high_resolution_clock::now();
-	auto difff = ee - ss;
-	std::cout << "TOTAL preprocessing TIME " << std::chrono::duration <double, std::milli>(difff).count() << " ms" << std::endl;
+	//auto ee = std::chrono::high_resolution_clock::now();
+	//auto difff = ee - ss;
+	//std::cout << "TOTAL preprocessing TIME " << std::chrono::duration <double, std::milli>(difff).count() << " ms" << std::endl;
 	return detections;
 }
 
