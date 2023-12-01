@@ -135,9 +135,7 @@ void TorchModel::changeDevice(const torch::DeviceType &deviceSet, const int &ind
 		}
 		else
 		{
-			//Trying to use a device thats not there, set to next available GPU
-			//OSI LOG here
-			
+			//Trying to use a device thats not there, set to next available GPU	
 			torch::Device dev(deviceSet,deviceCount-1);
 			this->device = dev;
 			this->model.to(this->device);
