@@ -164,28 +164,19 @@ torch::Tensor TorchModel::convertToTensor(const cv::Mat& img, bool normalize,boo
 	{
 		cv::cvtColor(c, c, cv::COLOR_BGR2RGB);
 	}
-	//std::cout << "CLINED IMAgE SIZE OF CHANNELS "<<c.channels() << std::endl;
 
 	float scale = (normalize) ? 1.0 / 255.0 : 1.0;
 	int channels = c.channels();
 	auto colorRead = (channels == 3) ? CV_32FC3 : CV_32FC1;
 	c.convertTo(c,colorRead , scale);
-	//std::cout << "Converted IMAgE" << std::endl;
 	
 	torch::Tensor converted = torch::zeros({ c.rows, c.cols,channels }, torch::kF32);
-	//torch::Tensor converted = torch::from_blob(c.data, { c.rows, c.cols, channels }, torch::kFloat).clone();
-	//converted = converted.to(torch::kInt8);
 	std::memcpy(converted.data_ptr(), c.data, sizeof(float) * converted.numel());
 	// add color dimension if it is greyscale 1
-	//std::cout << "memcpy IMAgE" << std::endl;
-
-	
 	converted = converted.permute({ 2, 0, 1 });
-	//std::cout << "permute IMAgE" << std::endl;
+	
 	//Add batch dimension
 	converted = converted.unsqueeze(0).to(this->device);
-	//std::cout << "squeeze and move device IMAgE" << std::endl;
-	//std::cout << converted.sizes() << std::endl;
 	
 	return converted;
 }
@@ -194,9 +185,7 @@ cv::Mat TorchModel::loadMat(const std::string file, bool grey, bool rgb)
 {
 	auto readMode = (grey) ? cv::IMREAD_GRAYSCALE : cv::IMREAD_COLOR;
 	cv::Mat returnMat = cv::imread(file, readMode);
-	//std::cout << returnMat.size();
-
-	//returnMat.convertTo(returnMat, CV_32FC3, 1.0);
+	
 	return returnMat;
 }
 
@@ -205,7 +194,6 @@ torch::Tensor TorchModel::convertListToTensor(std::list<cv::Mat>& imgs)
 
 
 	//Initalize tensor with first image and pop it from list
-	//
 	cv::Mat first = imgs.front();
 	torch::Tensor converted = this->convertToTensor(first);
 	imgs.pop_front();
@@ -225,8 +213,6 @@ torch::Tensor TorchModel::convertListToTensor(std::list<cv::Mat>& imgs)
 cv::Mat TorchModel::convertToMat(torch::Tensor& output, bool isFloat, bool permute, bool bgr, bool color)
 {
 	torch::Tensor tensor = output.clone();
-	//std::cout << "ENTER FUNCITON";
-	
 	tensor = tensor.permute({ 1, 2, 0 }).contiguous();
 	// if float, image is range of 0 -> 1
 	tensor = (isFloat) ? tensor.mul(255).clamp(0, 255).to(torch::kU8): tensor.to(torch::kU8);
