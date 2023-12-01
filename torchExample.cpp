@@ -15,9 +15,7 @@ int main()
 	cv::setNumThreads(4);
 	torch::set_num_threads(4);
 	
-	/ path to craft detector model
 	std::string det = "../models/CRAFT-detector.pt";
-	// path to recognition model.
 	std::string rec = "../models/traced-recog.pt";
 	
 	// Set your input image here!
@@ -34,7 +32,6 @@ int main()
 
 	//CHECK IF BOTH MODEL LOADED SUCESSFULLY
 	if (check_rec && check_det) 
-	// IF MODEL LOADED CORRECTLY, PROCEED WITH INFERENCE
 	{
 		int runs = 1;
 		// Load in image into openCV Mat (bW or color)
@@ -50,7 +47,6 @@ int main()
 		for (int i = 0; i < runs; i++)
 		{
 			
-			//Compute the size of the heatmap with respect to the largest axis and resize input
 			torch::Tensor input = detection.preProcess(processed.img.clone());
 			auto ss = std::chrono::high_resolution_clock::now();
 			// use custom algorithm for bounding box merging
