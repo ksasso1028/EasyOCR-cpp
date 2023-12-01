@@ -23,14 +23,10 @@ CRNNModel::CRNNModel() : TorchModel()
 float resizeComputeRatio(cv::Mat& img, int modelHeight)
 {
 	float ratio = float(img.cols) / float(img.rows);
-	//std::cout << img.cols << " = COLS " << img.rows << " =ROWS" << std::endl;
-
 	if (ratio < 1.0)
 	{
 		ratio = 1.0 / ratio;
-		//cv::imwrite("og.jpg", img);
 		cv::resize(img, img, cv::Size(modelHeight, int(modelHeight * ratio) ));
-		//cv::imwrite("resized.jpg", img);
 	}
 	else
 	{
@@ -103,13 +99,13 @@ std::vector<TextResult> CRNNModel::recognize(std::vector<BoundingBox>& dets, cv:
 	for (auto& x : dets)
 	{
 		TextResult res;
-		//std::cout << x.topLeft << "  " << x.bottomRight<< std::endl;
 		cv::Mat det = img(cv::Rect(x.topLeft.x, x.topLeft.y, (x.bottomRight.x - x.topLeft.x), (x.bottomRight.y - x.topLeft.y))).clone();
 		if (det.rows < 5)
 			continue;
 		//preprocess input
 		torch::Tensor processedTensor = this->preProcess(det);
 		std::vector<torch::Tensor>  input{ processedTensor.unsqueeze(0) };
+		
 		//Run inference on textboxauto ss = std::chrono::high_resolution_clock::now();
 		auto ss = std::chrono::high_resolution_clock::now();
 		torch::Tensor output = this->predict(input);
@@ -142,15 +138,12 @@ std::vector<TextResult> CRNNModel::recognize(std::vector<BoundingBox>& dets, cv:
 
 torch::Tensor CRNNModel::normalizePad(cv::Mat& processed, int maxWidth) 
 {
-	//std::cout << "MAX WDITH " << maxWidth << std::endl;
-	//cv::imwrite("Processed.jpg", processed);
+	
 	std::vector<torch::Tensor> input;
 
 	auto converted = this->convertToTensor(processed.clone(), true, false).squeeze(0);
-	//std::cout << converted.sizes() << std::endl;
 	torch::Tensor pad = torch::zeros({ 1,converted.size(1),maxWidth});
 	converted = (converted - (.5  ) / (.5  ));
-	//std::cout << "BEFOREEE index put" << std::endl ;
 
 	if (maxWidth > converted.size(2)) 
 	{
@@ -160,22 +153,11 @@ torch::Tensor CRNNModel::normalizePad(cv::Mat& processed, int maxWidth)
 		//cv::imwrite("Padded.jpg", padded);
 		converted = pad.clone();
 		
-		//std::cout << converted.sizes() << std::endl;
 		
 	}
 
 
-
-		
-	//std::cout << "AFTER NARROW" << pad.sizes();
 	int width = converted.size(2);
-	/*
-	if (maxWidth > width)
-	{
-		std::cout << "UNDER";
-		auto expanded = converted.index({ Slice(None,None,width - 1) }).unsqueeze(2).expand({ 1, converted.size(1), maxWidth - width });
-	}
-	*/
 	return converted;
 
 }
