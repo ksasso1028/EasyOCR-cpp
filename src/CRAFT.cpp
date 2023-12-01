@@ -94,31 +94,23 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 					{
 						maxY = dets[i + 1].bottomRight.y;
 					}
-					
 				}
 				canMerge = true;
 			}
-
 			else
 			{
 				newBottomRight = dets[i].bottomRight;
 				canMerge = false;
-
 			}
-
+			merge = canMerge;
 			if (firstRun)
 			{
-				// first box, we need to continue to flow into other logic
-				merge = canMerge;
 				// store first
 				newTopLeft = i;
 				firstRun = false;
 			}
-			else
-			{
-				merge = canMerge;
-			}
-			// other box is too far
+
+			//cant merge anymore other box is too far, build new box
 			if (!merge)
 			{
 				BoundingBox newBox;

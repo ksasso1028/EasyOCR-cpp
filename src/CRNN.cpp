@@ -43,7 +43,6 @@ std::string CRNNModel::greedyDecode(torch::Tensor& input, int size)
 {
 	int length = size;
 	std::vector<int> ignoreList = { 0 };
-	std::cout << input.sizes() << std::endl;
 	torch::Tensor t = input.slice(0, 0, input.size(0));
 	auto a = torch::cat({ torch::tensor({true}), ~(t.slice(0,0, -1) == t.slice(0,1).flatten()) }, 0);
 	auto b = ~(t.unsqueeze(1) == torch::tensor(ignoreList).unsqueeze(0)).all(1);

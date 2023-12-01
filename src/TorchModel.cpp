@@ -22,7 +22,6 @@ TorchModel::~TorchModel()
 {
 }
 
-
 bool TorchModel::loadModel(const std::string &modelPath)
 {
 	bool success = false;
@@ -48,8 +47,6 @@ bool TorchModel::loadModel(const std::string &modelPath)
 }
 
 	
-
-
 torch::Tensor TorchModel::predict(const std::vector<torch::Tensor> &input)
 {
 	torch::Tensor result = torch::empty({ 0 }).to(this->device);
@@ -194,4 +191,3 @@ cv::Mat TorchModel::convertToMat(torch::Tensor& output, bool isFloat, bool permu
 		cv::cvtColor(outputMat, outputMat, cv::COLOR_RGB2BGR);
 	return outputMat.clone();
 }
-

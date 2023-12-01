@@ -70,12 +70,8 @@ int main()
 				std::cout << "CONFIDENCE " << result.confidence << std::endl;
 				std::cout << "################################################" << std::endl;
 			}
-			
-
 			cv::imwrite("../output-heatmap.jpg", clone);
 			std::cout << "TOTAL INFERENCE TIME " << std::chrono::duration <double, std::milli>(difff).count() << " ms" << std::endl;
-
-
 		}
 
 	}
