@@ -68,7 +68,6 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 			float x = dets[i].bottomRight.x;
 			float xPrime = dets[i + 1].topLeft.x;
 			float ratio = x / xPrime;
-			bool canMerge;
 			bool isNegative = false;
 			if (x - xPrime < 0) isNegative = true;
 			float w= dets[i].bottomRight.x - dets[i].topLeft.x;
@@ -76,7 +75,8 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 			if (width > 5 * height)
 			{
 				// box is a line, skip merging
-				canMerge = false;
+				merge = false;
+				continue;
 			}
 			//merge box, store point
 			if (ratio > distanceThresh && ratio < 1.4 && std::abs(dets[i].bottomRight.y - dets[i+1].bottomRight.y) < 20)
@@ -94,22 +94,21 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 					{
 						maxY = dets[i + 1].bottomRight.y;
 					}
+
 				}
-				canMerge = true;
+				merge = true;
 			}
 			else
 			{
 				newBottomRight = dets[i].bottomRight;
-				canMerge = false;
+				merge = false;
 			}
-			merge = canMerge;
 			if (firstRun)
 			{
 				// store first
 				newTopLeft = i;
 				firstRun = false;
 			}
-
 			//cant merge anymore other box is too far, build new box
 			if (!merge)
 			{
