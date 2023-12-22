@@ -109,7 +109,7 @@ std::vector<TextResult> CRNNModel::recognize(std::vector<BoundingBox>& dets, cv:
 		predIndex = predIndex.view({ -1 });
 		std::string text = this->greedyDecode(predIndex, predIndex.size(0));
 		res.text = text;
-		res.confidence = *prob.data<float>();
+		res.confidence = *prob.data_ptr<float>();
 		res.coords = x;
 		results.push_back(res);
 		processed.push_back(processedTensor);
