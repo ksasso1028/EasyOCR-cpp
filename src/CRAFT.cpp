@@ -158,7 +158,7 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 	return merged;
 }
 
-std::vector<BoundingBox> CraftModel::getBoundingBoxes(torch::Tensor &input, torch::Tensor& output, float textThresh, float linkThresh, float lowText)
+std::vector<BoundingBox> CraftModel::getBoundingBoxes(const torch::Tensor &input, const torch::Tensor& output, float textThresh, float linkThresh, float lowText)
 {
 	std::vector<BoundingBox> detBoxes;
 	cv::Mat linkMap = this->convertToMat(output.select(2, 0).unsqueeze(0).clone(),true, true, false, false).clone();
@@ -258,7 +258,7 @@ std::vector<BoundingBox> CraftModel::getBoundingBoxes(torch::Tensor &input, torc
 	return detBoxes;
 }
 
-cv::Mat CraftModel::normalize(cv::Mat &img)
+cv::Mat CraftModel::normalize(const cv::Mat &img)
 {
 	std::vector<cv::Mat> channels(3);
 	cv::Mat output;
@@ -271,12 +271,12 @@ cv::Mat CraftModel::normalize(cv::Mat &img)
 	return output;
 }
 
-torch::Tensor CraftModel::preProcess(cv::Mat & matInput)
+torch::Tensor CraftModel::preProcess(const cv::Mat & matInput)
 {
 	//Normalize the input using mean + std values from easyOCR
-	matInput = this->normalize(matInput.clone()).clone();
+	cv::Mat normedMatInput = this->normalize(matInput.clone()).clone();
 	//Convert final input into a torch::Tensor from a cv::Mat
-	torch::Tensor input = this->convertToTensor(matInput.clone()).clone();
+	torch::Tensor input = this->convertToTensor(normedMatInput.clone()).clone();
 	return input;
 }
 

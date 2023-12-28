@@ -175,7 +175,7 @@ torch::Tensor TorchModel::convertListToTensor(std::list<cv::Mat>& imgs)
 	return converted.to(this->device);
 }
 
-cv::Mat TorchModel::convertToMat(torch::Tensor& output, bool isFloat, bool permute, bool bgr, bool color)
+cv::Mat TorchModel::convertToMat(const torch::Tensor& output, bool isFloat, bool permute, bool bgr, bool color)
 {
 	torch::Tensor tensor = output.clone();
 	tensor = tensor.permute({ 1, 2, 0 }).contiguous();
