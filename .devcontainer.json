@@ -1,0 +1,27 @@
+{
+	"name": "EasyOCR-cpp",
+	"build": {
+		"dockerfile": "./Dockerfile",
+		"context": ".",
+		"args": {}
+	},
+	"runArgs": [
+		"--name=EasyOCR-cpp",
+		"--gpus",
+		"all"
+	],
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ocr-c++/EasyOCR-cpp,type=bind",
+	"workspaceFolder": "/workspaces/ocr-c++",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools",
+				"ms-vscode.cpptools-extension-pack",
+				"ms-vscode.cpptools-themes",
+				"PKief.material-icon-theme",
+				"twxs.cmake"
+			]
+		}
+	}
+}
