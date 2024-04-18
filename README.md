@@ -21,7 +21,7 @@ Some features that have yet to be implemented:
 
 ### If you would like to support feel free to make a PR, or a issue if you are having trouble.
 
-## Setup with Docker
+## Setup with Docker (Thanks to [@BBO-repo](https://github.com/BBO-repo) )
 
 ### Docker container with VSCode
 To build and run through visual studio code, make sure the remote development extension is installed.<br>
