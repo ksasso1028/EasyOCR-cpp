@@ -15,11 +15,11 @@ int main()
 	cv::setNumThreads(4);
 	torch::set_num_threads(4);
 	
-	std::string det = "../models/CRAFT-detector.pt";
-	std::string rec = "../models/traced-recog.pt";
+	std::string det = "CRAFT-detector.pt";
+	std::string rec = "traced-recog.pt";
 	
 	// Set your input image here!
-	std::string filePath = "../test.jpg";
+	std::string filePath = "test.jpg";
 
 	auto startModel = std::chrono::steady_clock::now();
 	// Always check the model was loaded successully

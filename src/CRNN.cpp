@@ -1,23 +1,29 @@
 #include "CRNN.h"
+#include <iostream>
+#include <fstream>
 #include <tuple>
 using namespace torch::indexing;
 
 
 CRNNModel::CRNNModel() : TorchModel()
 {
-	for (int i = 0;i<this->e.size();i++)
-	{
-		this->english[(i+1)] = std::string(1,this->e[i]);
+	// eventually read from a config!
+	std::string filename = "english_g2_characters.txt";
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Error: Unable to open file " << filename << std::endl;
 	}
-	// Set the blank token
-	std::string blank = "[blank]";
-	this->english[0]= blank;
-	this->e.insert(this->e.begin(), ' ');
-	for (auto x : this->english)
-	{
-		std::cout << x.first << "  " << x.second << std::endl;
+
+	std::string line;
+	std::getline(file, line);
+	// add blank token
+	this->characters.push_back(' ');
+	// Convert string to vector of characters
+	for (char c : line) {
+		this->characters.push_back(c);
 	}
-	
+
+	file.close();
 }
 
 float resizeComputeRatio(cv::Mat& img, int modelHeight)
@@ -52,8 +58,8 @@ std::string CRNNModel::greedyDecode(torch::Tensor& input, int size)
 	std::vector<char> extracted;
 	for (int i = 0; i < result.size(0); i++) {
 		int index = result[i].item<int>();
-		if (index >= 0 && index < this->e.size()) {
-			extracted.push_back(this->e[index]);
+		if (index >= 0 && index < this->characters.size()) {
+			extracted.push_back(this->characters[index]);
 		}
 	}
 	// Join the extracted characters into a single string
