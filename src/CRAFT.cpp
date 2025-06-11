@@ -51,19 +51,19 @@ HeatMapRatio CraftModel::resizeAspect(cv::Mat&  img)
 	return output;
 }
 std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>& dets, float distanceThresh, int height, int width)
-{	
+{
 	// represents how much we change the top left Y
 	std::sort(dets.begin(), dets.end(), boxSorter());
-	bool merge = NULL;
-	std::vector<BoundingBox> merged;
+	std::vector<BoundingBox> mergedBoxes;
 	int newTopLeft;
 	bool firstRun = true;
 	for (int i = 0; i < dets.size(); i++)
 	{
+		bool merged = false;
 		cv::Point newBottomRight = dets[i].bottomRight;
 		int minY = 0;
 		int maxY = 0;
-		if (i < dets.size())
+		if (i + 1 < dets.size())
 		{
 			float x = dets[i].bottomRight.x;
 			float xPrime = dets[i + 1].topLeft.x;
@@ -75,7 +75,6 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 			if (width > 5 * height)
 			{
 				// box is a line, skip merging
-				merge = false;
 				continue;
 			}
 			//merge box, store point
@@ -94,68 +93,66 @@ std::vector<BoundingBox> CraftModel::mergeBoundingBoxes(std::vector<BoundingBox>
 					{
 						maxY = dets[i + 1].bottomRight.y;
 					}
-
 				}
-				merge = true;
+				merged = true;
 			}
 			else
 			{
 				newBottomRight = dets[i].bottomRight;
-				merge = false;
-			}
-			if (firstRun)
-			{
-				// store first
-				newTopLeft = i;
-				firstRun = false;
-			}
-			//cant merge anymore other box is too far, build new box
-			if (!merge)
-			{
-				BoundingBox newBox;
-				newBox.topLeft = dets[newTopLeft].topLeft;
-				newBox.topLeft.y -= minY;
-				//margin
-				newBox.topLeft.y *= .998;
-				newBox.topLeft.x *= .998;
-				if (newBox.topLeft.y < 0)
-				{
-					newBox.topLeft.y = 0;
-				}
-
-				if (newBox.topLeft.x < 0)
-				{
-					newBox.topLeft.x = 0;
-				}
-				newBox.topLeft.x = int(newBox.topLeft.x);
-				newBox.topLeft.y =  int(newBox.topLeft.y);
-
-				newBox.bottomRight = newBottomRight;
-				newBox.bottomRight.y += maxY;
-				// margin
-				newBox.bottomRight.y *= 1.003;
-				newBox.bottomRight.x *= 1.003;
-
-				if (newBox.bottomRight.y > height)
-				{
-					newBox.bottomRight.y = height-1;
-				}
-
-				if (newBox.bottomRight.x > width)
-				{
-					newBox.bottomRight.x = width-5;
-				}
-				newBox.bottomRight.x = int(newBox.bottomRight.x);
-				newBox.bottomRight.y =  int(newBox.bottomRight.y);				
-				merged.push_back(newBox);
-				// move top left box to next box
-				newTopLeft = i + 1;
-				minY = 0;
-				maxY = 0;
 			}
 		}
+		if (firstRun)
+		{
+			// store first
+			newTopLeft = i;
+			firstRun = false;
+		}
+		//cant merge anymore other box is too far, build new box
+		if (!merged)
+		{
+			BoundingBox newBox;
+			newBox.topLeft = dets[newTopLeft].topLeft;
+			newBox.topLeft.y -= minY;
+			//margin
+			newBox.topLeft.y *= .998;
+			newBox.topLeft.x *= .998;
+			if (newBox.topLeft.y < 0)
+			{
+				newBox.topLeft.y = 0;
+			}
+			if (newBox.topLeft.x < 0)
+			{
+				newBox.topLeft.x = 0;
+			}
+			newBox.topLeft.x = int(newBox.topLeft.x);
+			newBox.topLeft.y =  int(newBox.topLeft.y);
+
+			newBox.bottomRight = newBottomRight;
+			newBox.bottomRight.y += maxY;
+			// margin
+			newBox.bottomRight.y *= 1.003;
+			newBox.bottomRight.x *= 1.003;
+
+			if (newBox.bottomRight.y > height)
+			{
+				newBox.bottomRight.y = height-1;
+			}
+
+			if (newBox.bottomRight.x > width)
+			{
+				newBox.bottomRight.x = width-5;
+			}
+			newBox.bottomRight.x = int(newBox.bottomRight.x);
+			newBox.bottomRight.y = int(newBox.bottomRight.y);
+			mergedBoxes.push_back(newBox);
+			// move top left box to next box
+			newTopLeft = i + 1;
+			minY = 0;
+			maxY = 0;
+
+		}
 	}
-	return merged;
+	return mergedBoxes;
 }
 
 std::vector<BoundingBox> CraftModel::getBoundingBoxes(const torch::Tensor &input, const torch::Tensor& output, float textThresh, float linkThresh, float lowText)
